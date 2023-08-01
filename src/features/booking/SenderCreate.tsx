@@ -1,13 +1,15 @@
 import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { Customer } from '~/types/customer';
+import type { Town } from './ReceiverCreate';
 
 interface Props {
+	townshipData: Town[];
 	nextStep: (formIsFail: boolean) => void;
 }
 
 export const SenderCreate = (props: Props) => {
-	const { nextStep } = props;
+	const { nextStep, townshipData } = props;
 
 	const form = useForm({
 		initialValues: {
@@ -64,12 +66,7 @@ export const SenderCreate = (props: Props) => {
 						label='Township'
 						placeholder='Select'
 						withAsterisk
-						data={[
-							{ value: 'react', label: 'React' },
-							{ value: 'ng', label: 'Angular' },
-							{ value: 'svelte', label: 'Svelte' },
-							{ value: 'vue', label: 'Vue' },
-						]}
+						data={townshipData}
 						{...form.getInputProps('township')}
 					/>
 					<Select
@@ -79,10 +76,10 @@ export const SenderCreate = (props: Props) => {
 						placeholder='Select'
 						withAsterisk
 						data={[
-							{ value: 'react', label: 'React' },
-							{ value: 'ng', label: 'Angular' },
-							{ value: 'svelte', label: 'Svelte' },
-							{ value: 'vue', label: 'Vue' },
+							{
+								value: 'e63c061a-4879-4ef2-b102-aee381a1eaea',
+								label: 'Yangon',
+							},
 						]}
 						{...form.getInputProps('city')}
 					/>

@@ -3,9 +3,26 @@ import { useState } from 'react';
 import { ParcelCreate } from '~/features/booking/ParcelCreate';
 import { ReceiverCreate } from '~/features/booking/ReceiverCreate';
 import { SenderCreate } from '~/features/booking/SenderCreate';
+import { api } from '~/utils/api';
 
 function Bookings() {
 	const [active, setActive] = useState(0);
+
+	//*=========================================================================
+
+	// const { data: city } = api.location.getCity.useQuery();
+	const { data: township, isLoading: townshipIsLoading } =
+		api.location.getTownship.useQuery();
+
+	const townshipData =
+		!townshipIsLoading && township !== 'Error' && township !== undefined
+			? township.map((town) => ({
+					value: town.id,
+					label: town.name,
+			  }))
+			: [{ value: '', label: '' }];
+
+	//*=========================================================================
 
 	const nextStep = (formIsFail: boolean) =>
 		setActive((current) => {
@@ -23,11 +40,11 @@ function Bookings() {
 			<Box w={800} mt={80}>
 				<Stepper active={active} breakpoint='sm'>
 					<Stepper.Step label='First step' description='Sender (You)'>
-						<SenderCreate nextStep={nextStep} />
+						<SenderCreate nextStep={nextStep} townshipData={townshipData} />
 					</Stepper.Step>
 
 					<Stepper.Step label='Second step' description='Receiver (Customer)'>
-						<ReceiverCreate nextStep={nextStep} />
+						<ReceiverCreate nextStep={nextStep} townshipData={townshipData} />
 					</Stepper.Step>
 
 					<Stepper.Step label='Final step' description='Social media'>
