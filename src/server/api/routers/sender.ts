@@ -15,6 +15,15 @@ export const senderRouter = createTRPCRouter({
 			}),
 		)
 		.mutation(async ({ input }) => {
-			await ApiClient().post<Sender>('/senders', input);
+			const [response, error] = await ApiClient()
+				.post<Sender>('/sender', input)
+				.then((res) => [res, null] as const)
+				.catch((e: unknown) => [null, e] as const);
+
+			if (!response?.data || error) {
+				return null;
+			}
+
+			return response?.data;
 		}),
 });

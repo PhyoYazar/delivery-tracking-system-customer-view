@@ -1,6 +1,9 @@
-import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
+import { Button, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
+import type { Dispatch, SetStateAction } from 'react';
+import { type SRType } from '~/pages/bookings';
 import type { Customer } from '~/types/customer';
+import { api } from '~/utils/api';
 
 export interface Town {
 	value: string;
@@ -10,10 +13,11 @@ export interface Town {
 interface Props {
 	townshipData: Town[];
 	nextStep: (formIsFail: boolean) => void;
+	getReceiver: Dispatch<SetStateAction<SRType>>;
 }
 
 export const ReceiverCreate = (props: Props) => {
-	const { nextStep, townshipData } = props;
+	const { nextStep, townshipData, getReceiver } = props;
 
 	const form = useForm({
 		initialValues: {
@@ -33,9 +37,36 @@ export const ReceiverCreate = (props: Props) => {
 		},
 	});
 
+	const createReceiver = api.receiver.createSender.useMutation({
+		onSuccess: (data) => {
+			// notifications.show({
+			// 	message: 'Successfully updated.',
+			// 	icon: <IconCheck size='1rem' />,
+			// 	autoClose: true,
+			// 	withCloseButton: true,
+			// 	color: 'green',
+			// });
+			if (data?.id) {
+				getReceiver({ id: data.id, name: data.name });
+			}
+
+			nextStep(form.validate().hasErrors);
+		},
+		onError: () => {
+			// notifications.show({
+			// 	message: 'Failed to update. Please try again',
+			// 	icon: <IconAlarm size='1rem' />,
+			// 	autoClose: true,
+			// 	withCloseButton: true,
+			// 	color: 'red',
+			// });
+		},
+	});
+
 	const onSubmit = (values: Customer) => {
-		console.log(values);
-		nextStep(form.validate().hasErrors);
+		if (form.validate().hasErrors) return;
+
+		createReceiver.mutate(values);
 	};
 
 	return (
@@ -71,7 +102,7 @@ export const ReceiverCreate = (props: Props) => {
 						placeholder='Select'
 						withAsterisk
 						data={townshipData}
-						{...form.getInputProps('township')}
+						{...form.getInputProps('township_id')}
 					/>
 					<Select
 						w={'100%'}
@@ -85,14 +116,19 @@ export const ReceiverCreate = (props: Props) => {
 								label: 'Yangon',
 							},
 						]}
-						{...form.getInputProps('city')}
+						{...form.getInputProps('city_id')}
 					/>
 				</Group>
 			</Stack>
 
 			<Group position='right' mt='md'>
-				<Button type='submit' size='md'>
-					Next Step
+				<Button
+					w={120}
+					type='submit'
+					size='md'
+					disabled={createReceiver.isLoading}
+				>
+					{createReceiver.isLoading ? <Loader size={'sm'} /> : ' Next Step'}
 				</Button>
 			</Group>
 		</form>

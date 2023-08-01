@@ -1,15 +1,19 @@
-import { Button, Group, Select, Stack, TextInput } from '@mantine/core';
+import { Button, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
+import type { Dispatch, SetStateAction } from 'react';
+import { type SRType } from '~/pages/bookings';
 import type { Customer } from '~/types/customer';
+import { api } from '~/utils/api';
 import type { Town } from './ReceiverCreate';
 
 interface Props {
 	townshipData: Town[];
 	nextStep: (formIsFail: boolean) => void;
+	getSender: Dispatch<SetStateAction<SRType>>;
 }
 
 export const SenderCreate = (props: Props) => {
-	const { nextStep, townshipData } = props;
+	const { nextStep, townshipData, getSender } = props;
 
 	const form = useForm({
 		initialValues: {
@@ -29,9 +33,36 @@ export const SenderCreate = (props: Props) => {
 		},
 	});
 
+	const createSender = api.sender.createSender.useMutation({
+		onSuccess: (data) => {
+			// notifications.show({
+			// 	message: 'Successfully updated.',
+			// 	icon: <IconCheck size='1rem' />,
+			// 	autoClose: true,
+			// 	withCloseButton: true,
+			// 	color: 'green',
+			// });
+			if (data?.id) {
+				getSender({ id: data.id, name: data.name });
+			}
+
+			nextStep(form.validate().hasErrors);
+		},
+		onError: () => {
+			// notifications.show({
+			// 	message: 'Failed to update. Please try again',
+			// 	icon: <IconAlarm size='1rem' />,
+			// 	autoClose: true,
+			// 	withCloseButton: true,
+			// 	color: 'red',
+			// });
+		},
+	});
+
 	const onSubmit = (values: Customer) => {
-		console.log(values);
-		nextStep(form.validate().hasErrors);
+		if (form.validate().hasErrors) return;
+
+		createSender.mutate(values);
 	};
 
 	return (
@@ -67,7 +98,7 @@ export const SenderCreate = (props: Props) => {
 						placeholder='Select'
 						withAsterisk
 						data={townshipData}
-						{...form.getInputProps('township')}
+						{...form.getInputProps('township_id')}
 					/>
 					<Select
 						w={'100%'}
@@ -81,14 +112,19 @@ export const SenderCreate = (props: Props) => {
 								label: 'Yangon',
 							},
 						]}
-						{...form.getInputProps('city')}
+						{...form.getInputProps('city_id')}
 					/>
 				</Group>
 			</Stack>
 
 			<Group position='right' mt='md'>
-				<Button type='submit' size='md'>
-					Next Step
+				<Button
+					w={120}
+					type='submit'
+					size='md'
+					disabled={createSender.isLoading}
+				>
+					{createSender.isLoading ? <Loader size={'sm'} /> : ' Next Step'}
 				</Button>
 			</Group>
 		</form>

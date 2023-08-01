@@ -1,12 +1,29 @@
-import { Box, Button, Center, Group, Stepper } from '@mantine/core';
+import {
+	Box,
+	Button,
+	Center,
+	Stack,
+	Stepper,
+	Text,
+	Title,
+} from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 import { ParcelCreate } from '~/features/booking/ParcelCreate';
 import { ReceiverCreate } from '~/features/booking/ReceiverCreate';
 import { SenderCreate } from '~/features/booking/SenderCreate';
 import { api } from '~/utils/api';
 
+export type SRType = {
+	id: string;
+	name: string;
+};
+
 function Bookings() {
 	const [active, setActive] = useState(0);
+
+	const [sender, setSender] = useState<SRType>({ id: '', name: '' });
+	const [receiver, setReceiver] = useState<SRType>({ id: '', name: '' });
 
 	//*=========================================================================
 
@@ -40,27 +57,63 @@ function Bookings() {
 			<Box w={800} mt={80}>
 				<Stepper active={active} breakpoint='sm'>
 					<Stepper.Step label='First step' description='Sender (You)'>
-						<SenderCreate nextStep={nextStep} townshipData={townshipData} />
+						<SenderCreate
+							nextStep={nextStep}
+							townshipData={townshipData}
+							getSender={setSender}
+						/>
 					</Stepper.Step>
 
 					<Stepper.Step label='Second step' description='Receiver (Customer)'>
-						<ReceiverCreate nextStep={nextStep} townshipData={townshipData} />
+						<ReceiverCreate
+							nextStep={nextStep}
+							townshipData={townshipData}
+							getReceiver={setReceiver}
+						/>
 					</Stepper.Step>
 
-					<Stepper.Step label='Final step' description='Social media'>
-						<ParcelCreate />
+					<Stepper.Step label='Final step' description='Parcel Info'>
+						<ParcelCreate
+							sender={sender}
+							receiver={receiver}
+							nextStep={nextStep}
+						/>
 					</Stepper.Step>
 
-					<Stepper.Completed>Completed! Form values:</Stepper.Completed>
+					<Stepper.Completed>
+						<Stack my={50}>
+							<Center>
+								<Title>Completed!</Title>
+							</Center>
+							<Center>
+								<Text c={'gray.6'} fz={'md'}>
+									You have successfully created the booking!
+								</Text>
+							</Center>
+
+							<Center>
+								<Button
+									leftIcon={<IconPlus size={20} />}
+									onClick={() => {
+										setActive(0);
+										setSender({ name: '', id: '' });
+										setReceiver({ name: '', id: '' });
+									}}
+								>
+									Create Booking Again
+								</Button>
+							</Center>
+						</Stack>
+					</Stepper.Completed>
 				</Stepper>
 
-				<Group position='right' mt='xl'>
+				{/* <Group position='right' mt='xl'>
 					{active !== 0 && (
 						<Button variant='default' onClick={prevStep}>
 							Back
 						</Button>
 					)}
-				</Group>
+				</Group> */}
 			</Box>
 		</Center>
 	);
