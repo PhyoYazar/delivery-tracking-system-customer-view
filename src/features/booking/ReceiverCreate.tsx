@@ -1,5 +1,7 @@
 import { Button, Group, Loader, Select, Stack, TextInput } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { IconAlarm } from '@tabler/icons-react';
 import type { Dispatch, SetStateAction } from 'react';
 import { type SRType } from '~/pages/bookings';
 import type { Customer } from '~/types/customer';
@@ -30,7 +32,9 @@ export const ReceiverCreate = (props: Props) => {
 
 		validate: {
 			name: isNotEmpty('Name must not be empty'),
-			phone_number: isNotEmpty('Phone Number must not be empty'),
+			// phone_number: isNotEmpty('Phone Number must not be empty'),
+			phone_number: (value) =>
+				/[0-9]{10}/.test(value) ? null : 'Invalid phone number',
 			address: isNotEmpty('Address must not be empty'),
 			township_id: isNotEmpty('Township must not be empty'),
 			city_id: isNotEmpty('City must not be empty'),
@@ -53,13 +57,13 @@ export const ReceiverCreate = (props: Props) => {
 			nextStep(form.validate().hasErrors);
 		},
 		onError: () => {
-			// notifications.show({
-			// 	message: 'Failed to update. Please try again',
-			// 	icon: <IconAlarm size='1rem' />,
-			// 	autoClose: true,
-			// 	withCloseButton: true,
-			// 	color: 'red',
-			// });
+			notifications.show({
+				message: 'Something wrong. Please try again',
+				icon: <IconAlarm size='1rem' />,
+				autoClose: true,
+				withCloseButton: true,
+				color: 'red',
+			});
 		},
 	});
 
@@ -112,7 +116,7 @@ export const ReceiverCreate = (props: Props) => {
 						withAsterisk
 						data={[
 							{
-								value: 'e63c061a-4879-4ef2-b102-aee381a1eaea',
+								value: '3000b4c7-b1c5-4591-a7a3-8a7d81031a34',
 								label: 'Yangon',
 							},
 						]}
@@ -123,7 +127,7 @@ export const ReceiverCreate = (props: Props) => {
 
 			<Group position='right' mt='md'>
 				<Button
-					w={120}
+					w={130}
 					type='submit'
 					size='md'
 					disabled={createReceiver.isLoading}

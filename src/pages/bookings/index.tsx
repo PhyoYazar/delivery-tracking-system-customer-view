@@ -60,7 +60,7 @@ function Bookings() {
 			<Box w={800} mt={50}>
 				<Stack>
 					<Button
-						disabled={active !== 0}
+						disabled={active > 0 && active <= 2}
 						w={100}
 						leftIcon={<IconArrowBack size={20} />}
 						variant='outline'
@@ -68,6 +68,7 @@ function Bookings() {
 					>
 						Back
 					</Button>
+
 					<Stepper active={active} breakpoint='sm'>
 						<Stepper.Step label='First step' description='Sender (You)'>
 							<SenderCreate

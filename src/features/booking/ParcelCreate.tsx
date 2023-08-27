@@ -1,10 +1,18 @@
-import { Button, Group, Loader, Stack, TextInput } from '@mantine/core';
+import {
+	Button,
+	Group,
+	Loader,
+	Stack,
+	TextInput,
+	Textarea,
+} from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import { type SRType } from '~/pages/bookings';
 import { api } from '~/utils/api';
 
 interface Parcel {
-	price: number;
+	name: string;
+	description: string;
 	sender: string;
 	receiver: string;
 }
@@ -20,21 +28,28 @@ export const ParcelCreate = (props: Props) => {
 
 	const form = useForm({
 		initialValues: {
-			price: 0,
+			name: '',
+			description: '',
 			sender: sender.name,
 			receiver: receiver.name,
 		},
 
 		validate: {
-			price: isNotEmpty('Price must not be empty'),
+			name: isNotEmpty('Name must not be empty'),
 			sender: isNotEmpty('Sender must not be empty'),
 			receiver: isNotEmpty('Receiver must not be empty'),
 		},
 	});
 
+	const autoAssign = api.parcel.autoAssign.useMutation();
+
 	const createParcel = api.parcel.createParcel.useMutation({
-		onSuccess: () => {
+		onSuccess: (resp) => {
 			nextStep(form.validate().hasErrors);
+
+			if (resp) {
+				autoAssign.mutate({ id: resp.id, role: 'picker' });
+			}
 		},
 		onError: () => {},
 	});
@@ -43,7 +58,8 @@ export const ParcelCreate = (props: Props) => {
 		if (form.validate().hasErrors) return;
 
 		createParcel.mutate({
-			price: +values.price,
+			name: values.name,
+			description: values.description,
 			sender_id: sender.id,
 			receiver_id: receiver.id,
 		});
@@ -55,9 +71,18 @@ export const ParcelCreate = (props: Props) => {
 				<TextInput
 					size='md'
 					withAsterisk
-					label='Price'
+					label='Product Name'
 					placeholder='john'
-					{...form.getInputProps('price')}
+					{...form.getInputProps('name')}
+				/>
+				<Textarea
+					size='md'
+					label='Description'
+					placeholder='write description ...'
+					autosize
+					minRows={2}
+					maxRows={4}
+					{...form.getInputProps('description')}
 				/>
 				<TextInput
 					variant='filled'
@@ -65,7 +90,6 @@ export const ParcelCreate = (props: Props) => {
 					size='md'
 					withAsterisk
 					label='Sender (You)'
-					placeholder='09987654321'
 					{...form.getInputProps('sender')}
 				/>
 				<TextInput
@@ -74,14 +98,13 @@ export const ParcelCreate = (props: Props) => {
 					size='md'
 					withAsterisk
 					label='Receiver (Customer)'
-					placeholder='No.234, Some Street, ...'
 					{...form.getInputProps('receiver')}
 				/>
 			</Stack>
 
 			<Group position='right' mt='md'>
 				<Button
-					w={120}
+					w={130}
 					type='submit'
 					size='md'
 					disabled={createParcel.isLoading}
