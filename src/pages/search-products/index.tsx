@@ -108,7 +108,7 @@ const SearchProductsPage = () => {
 					)
 				) : null}
 
-				{/* {!isLoading && <pre>{JSON.stringify(data, null, 3)}</pre>} */}
+				{!isLoading && <pre>{JSON.stringify(data, null, 3)}</pre>}
 			</Stack>
 		</Center>
 	);

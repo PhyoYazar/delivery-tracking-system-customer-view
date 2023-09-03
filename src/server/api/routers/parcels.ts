@@ -35,7 +35,7 @@ export const parcelRouter = createTRPCRouter({
 		)
 		.query(async ({ input }) => {
 			const [response, error] = await apiClient()
-				.get<ParcelResponse[]>('/parcels', { params: input })
+				.get<ParcelResponse[]>('/parcels/track', { params: input })
 				.then((res) => [res, null] as const)
 				.catch((e: unknown) => [null, e] as const);
 
@@ -56,6 +56,28 @@ export const parcelRouter = createTRPCRouter({
 		.mutation(async ({ input }) => {
 			const [response, error] = await apiClient()
 				.patch<ParcelResponse>(`/parcels/auto-assign/${input.id}`, {
+					role: input.role,
+				})
+				.then((res) => [res, null] as const)
+				.catch((e: unknown) => [null, e] as const);
+
+			if (response === null || error) {
+				throw new TRPCClientError('Something wrong!');
+			}
+
+			return response.data;
+		}),
+
+	autoAssignSchedule: publicProcedure
+		.input(
+			z.object({
+				id: z.string(),
+				role: z.string(),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const [response, error] = await apiClient()
+				.patch<ParcelResponse>(`/parcels/auto-assign/schedule/${input.id}`, {
 					role: input.role,
 				})
 				.then((res) => [res, null] as const)

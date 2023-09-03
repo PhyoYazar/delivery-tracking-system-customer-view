@@ -42,6 +42,7 @@ export const ParcelCreate = (props: Props) => {
 	});
 
 	const autoAssign = api.parcel.autoAssign.useMutation();
+	const autoAssignSchedule = api.parcel.autoAssignSchedule.useMutation();
 
 	const createParcel = api.parcel.createParcel.useMutation({
 		onSuccess: (resp) => {
@@ -49,6 +50,7 @@ export const ParcelCreate = (props: Props) => {
 
 			if (resp) {
 				autoAssign.mutate({ id: resp.id, role: 'picker' });
+				autoAssignSchedule.mutate({ id: resp.id, role: 'picker' });
 			}
 		},
 		onError: () => {},
