@@ -2,12 +2,13 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	/* justify-content: center; */
 	min-height: 100vh;
 	background-image: linear-gradient(to bottom, #2e026d, #15162c);
 }
 
 .container {
+	margin-top: 5rem;
 	width: 100%;
 	display: flex;
 	flex-direction: column;

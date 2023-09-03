@@ -1,3 +1,4 @@
+import { Center, Stack } from '@mantine/core';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import styles from './index.module.css';
@@ -14,35 +15,45 @@ export default function Home() {
 
 			<main className={styles.main}>
 				<div className={styles.container}>
-					<h1 className={styles.title}>
-						<span className={styles.pinkSpan}>Welcome</span>
-					</h1>
-					<div className={styles.cardRow}>
-						<div
-							className={styles.card}
-							onClick={() => void router.push('/bookings')}
-						>
-							<h3 className={styles.cardTitle}>Pick Up Bookings →</h3>
-							<div className={styles.cardText}>
+					<Stack spacing={150}>
+						<Center>
+							<h1 className={styles.title}>
+								<span className={styles.pinkSpan}>Welcome</span>
+							</h1>
+						</Center>
+						<div className={styles.cardRow}>
+							<div
+								className={styles.card}
+								onClick={() => void router.push('/bookings')}
+							>
+								<h3 className={styles.cardTitle}>Booking →</h3>
+								<div className={styles.cardText}>
+									Book the parcel to send where you want
+								</div>
+								{/* <div className={styles.cardText}>
 								Customers can track the status of their pickups in real-time,
 								ensuring a smooth and reliable shipping experience. Say goodbye
 								to long lines and travel to drop-off points – Pick-Up Bookings
 								brings shipping convenience right to your doorstep.
+							</div> */}
 							</div>
-						</div>
-						<div
-							className={styles.card}
-							onClick={() => void router.push('/search-products')}
-						>
-							<h3 className={styles.cardTitle}>Track the Routes →</h3>
-							<div className={styles.cardText}>
+							<div
+								className={styles.card}
+								onClick={() => void router.push('/search-products')}
+							>
+								<h3 className={styles.cardTitle}>Search →</h3>
+								<div className={styles.cardText}>
+									Search your parcels to see where it is
+								</div>
+								{/* <div className={styles.cardText}>
 								Track your routes by ensuring the safe and timely delivery of
 								your products to customers. With real-time tracking
 								capabilities, the service empowers users to trace the location,
 								status, and movement of their goods from production to delivery
+							</div> */}
 							</div>
 						</div>
-					</div>
+					</Stack>
 				</div>
 			</main>
 		</>
