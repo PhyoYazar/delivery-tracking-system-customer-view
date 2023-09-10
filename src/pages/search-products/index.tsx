@@ -51,7 +51,7 @@ const SearchProductsPage = () => {
 			phone_number: phoneNumber,
 		},
 		{
-			enabled: name !== '' && phoneNumber !== '',
+			enabled: !!name && !!phoneNumber,
 		},
 	);
 
