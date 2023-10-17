@@ -44,11 +44,11 @@ const AboutUsPage = () => {
 									Contact Us
 								</Title>
 
-								<Text color='gray.6'>
+								{/* <Text color='gray.6'>
 									Lorem ipsum, dolor sit amet consectetur adipisicing elit. Odit
 									non, eius ex, id tempore fugit voluptates nam accusantium,
 									ratione saepe nemo? Ut quia sit ipsa voluptatibus.
-								</Text>
+								</Text> */}
 
 								<Stack mt={10}>
 									{contactInfo.map(({ icon, value }) => (
@@ -70,7 +70,7 @@ const AboutUsPage = () => {
 								src='/img/contact-us.svg'
 								alt='company photo'
 								width={700}
-								height={450}
+								height={400}
 							/>
 						</Grid.Col>
 					</Grid>
