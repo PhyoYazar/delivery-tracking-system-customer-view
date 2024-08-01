@@ -9,13 +9,14 @@ import { api } from '~/utils/api';
 import type { Town } from './ReceiverCreate';
 
 interface Props {
+	cityData: { value: string; label: string }[];
 	townshipData: Town[];
 	nextStep: (formIsFail: boolean) => void;
 	getSender: Dispatch<SetStateAction<SRType>>;
 }
 
 export const SenderCreate = (props: Props) => {
-	const { nextStep, townshipData, getSender } = props;
+	const { nextStep, cityData, townshipData, getSender } = props;
 
 	const form = useForm({
 		initialValues: {
@@ -113,12 +114,13 @@ export const SenderCreate = (props: Props) => {
 						label='City'
 						placeholder='Select'
 						withAsterisk
-						data={[
-							{
-								value: '3000b4c7-b1c5-4591-a7a3-8a7d81031a34',
-								label: 'Yangon',
-							},
-						]}
+						data={cityData}
+						// data={[
+						// 	{
+						// 		value: '3000b4c7-b1c5-4591-a7a3-8a7d81031a34',
+						// 		label: 'Yangon',
+						// 	},
+						// ]}
 						{...form.getInputProps('city_id')}
 					/>
 				</Group>

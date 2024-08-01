@@ -29,8 +29,13 @@ function Bookings() {
 	const router = useRouter();
 
 	//*=========================================================================
+	const { data: city } = api.location.getCity.useQuery();
 
-	// const { data: city } = api.location.getCity.useQuery();
+	const cityData: { value: string; label: string }[] =
+		city !== 'Error' && city !== undefined
+			? city.map((c) => ({ value: c.id, label: c.name }))
+			: [];
+
 	const { data: township, isLoading: townshipIsLoading } =
 		api.location.getTownship.useQuery();
 
@@ -72,6 +77,7 @@ function Bookings() {
 					<Stepper active={active} breakpoint='sm'>
 						<Stepper.Step label='First step' description='Sender (You)'>
 							<SenderCreate
+								cityData={cityData}
 								nextStep={nextStep}
 								townshipData={townshipData}
 								getSender={setSender}
@@ -80,6 +86,7 @@ function Bookings() {
 
 						<Stepper.Step label='Second step' description='Receiver (Customer)'>
 							<ReceiverCreate
+								cityData={cityData}
 								nextStep={nextStep}
 								townshipData={townshipData}
 								getReceiver={setReceiver}
